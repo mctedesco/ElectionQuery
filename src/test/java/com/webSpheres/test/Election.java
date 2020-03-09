@@ -1,14 +1,11 @@
 package com.webSpheres.test;
 
-import com.webSpheres.test.common.Endpoint;
-import io.restassured.http.ContentType;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
-
 
 public class Election {
 
@@ -35,6 +32,7 @@ public class Election {
                 then().
                 statusCode(403).log().all();
     }
+
 
     /**
      * AUT_003 Test Case 3 - Verify election query endpoint request returns positive result 200 status when Show Parameters Alt selected
