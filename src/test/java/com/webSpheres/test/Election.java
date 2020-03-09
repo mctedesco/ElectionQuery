@@ -1,56 +1,98 @@
 package com.webSpheres.test;
 
 import com.webSpheres.test.common.Endpoint;
+import io.restassured.http.ContentType;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 
 
 public class Election {
 
+    /**
+     * AUT_001 Test Case 1 - Verify election query endpoint request returns positive result 200 status with API Key checkbox checked
+     */
     @Test
-    //AUT_001 Test Case 1 - Verify election query endpoint request returns positive result 200 status with API Key checkbox checked
     public void validateElectionQuerywithAPIKey(){
-        given().get("https://www.googleapis.com/civicinfo/v2/elections?key=AIzaSyCTMXDhAkBJBNEcAINED-LFYuTECeEw4GI").then()
-.statusCode(200).log().all();
+        given().
+                param("key", "AIzaSyCTMXDhAkBJBNEcAINED-LFYuTECeEw4GI").
+                when().
+                get("https://www.googleapis.com/civicinfo/v2/elections").
+                then().
+                statusCode(200).log().all();
     }
 
+    /**
+     * AUT_002 Test Case 2 - Verify election query endpoint request returns negative result 403 status with API Key checkbox unchecked
+     */
     @Test
-    //AUT_002 Test Case 2 - Verify election query endpoint request returns negative result 403 status with API Key checkbox unchecked
     public void validateElectionQuerywithoutAPIKey(){
-        given().get("https://www.googleapis.com/civicinfo/v2/elections").then()
-                .statusCode(403).log().all();
+        given().
+                get("https://www.googleapis.com/civicinfo/v2/elections").
+                then().
+                statusCode(403).log().all();
     }
 
+    /**
+     * AUT_003 Test Case 3 - Verify election query endpoint request returns positive result 200 status when Show Parameters Alt selected
+     */
     @Test
-    //AUT_003 Test Case 3 - Verify election query endpoint request returns positive result 200 status when Show Parameters Alt selected
     public void validateElectionQuerywithAltSelected(){
         given().
-                get("https://www.googleapis.com/civicinfo/v2/elections?alt=json&key=AIzaSyCTMXDhAkBJBNEcAINED-LFYuTECeEw4GI").
+                param("alt", "json").
+                param("key", "AIzaSyCTMXDhAkBJBNEcAINED-LFYuTECeEw4GI").
+                when().
+                get("https://www.googleapis.com/civicinfo/v2/elections").
                 then()
                 .statusCode(200).log().all();
     }
 
+    /**
+     * AUT_004 Test Case 4 - Verify election query endpoint request returns positive result 200 status when Show Parameters fields selected with string value
+     */
     @Test
-    //AUT_004 Test Case 4 - Verify election query endpoint request returns positive result 200 status when Show Parameters fields selected with string value
     public void validateElectionQuerywithFieldSelected(){
         given().
-                get("https://www.googleapis.com/civicinfo/v2/elections?fields=kind&key=AIzaSyCTMXDhAkBJBNEcAINED-LFYuTECeEw4GI").
+                param("fields", "kind").
+                param("key", "AIzaSyCTMXDhAkBJBNEcAINED-LFYuTECeEw4GI").
+                when().
+                get("https://www.googleapis.com/civicinfo/v2/elections").
                 then().
                 statusCode(200).log().all().
                 body("kind", is("civicinfo#electionsQueryResponse"));
 
     }
 
+    /**
+     * AUT_005 Test Case 5 - Verify election query endpoint request returns negative result 400 status when Show Parameters fields selected with erroneous string value
+     */
     @Test
-    //AUT_005 Test Case 5 - Verify election query endpoint request returns negative result 400 status when Show Parameters fields selected with erroneous string value
     public void validateElectionQuerywithErrorFieldSelected(){
         given().
-                get("https://www.googleapis.com/civicinfo/v2/elections?fields=kindsss&key=AIzaSyCTMXDhAkBJBNEcAINED-LFYuTECeEw4GI").
+                param("fields", "kindsss").
+                param("key", "AIzaSyCTMXDhAkBJBNEcAINED-LFYuTECeEw4GI").
+                when().
+                get("https://www.googleapis.com/civicinfo/v2/elections").
                 then().
                 statusCode(400).log().all();
 
     }
 
+    /**
+     * AUT_006 Test Case 6 - Verify election query endpoint request returns positive result 200 status when ALL Show Parameters fields selected with string value
+     */
+    @Test
+    public void validateElectionQuerywithAllFieldSelected(){
+        given().
+                param("fields", "kind,elections(id,name,electionDay,ocdDivisionId)").
+                param("key", "AIzaSyCTMXDhAkBJBNEcAINED-LFYuTECeEw4GI").
+                when().
+                get("https://www.googleapis.com/civicinfo/v2/elections").
+                then().
+                statusCode(200).log().all();
+
+    }
 }
